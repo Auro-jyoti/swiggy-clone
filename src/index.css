@@ -46,7 +46,7 @@ nav {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
   padding-bottom: 80px;
-  gap: 20px;
+  gap: 55px;
   justify-items: center;
 
 }
@@ -57,13 +57,13 @@ nav {
   padding: 10px;
   border-radius: 16px;
   cursor: pointer;
-  transition: box-shadow 0.2s ease;
+  transition: transform 0.2s ease;
   box-shadow: 0px 5px 10px 5px rgba(147, 143, 143, 0.3);
+  /* transform: scale(1); */
 }
 
 .food-card:hover {
-   /* border: 1px solid rgb(206, 203, 203); */
-   
+   transform: scale(0.95);
 }
 
 .food-card-image {

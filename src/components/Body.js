@@ -1,26 +1,31 @@
 import RestrauntCard from "./RestrauntCard";
 import { restrauntList } from "../assets/config";
-import { useState, useEffect } from "react"; 
+import { useState, useEffect } from "react";
+import Shimmer from "./Shimmer";
 
-function filterData (searchText, restraunts) {
-    filterData = restraunts.filter((restraunt) => restraunt.Data.data.name.toLowerCase().includes(searchText.toLowerCase()));
+function filterData(searchText, restraunts) {
+    filterData = restraunts?.filter((restraunt) => restraunt?.Data?.data?.name?.toLowerCase()?.includes(searchText?.toLowerCase()));
 
     return filterData;
 }
 
 const Body = () => {
-    
-    const [restraunts, setRestraunts] = useState(restrauntList);
+    const [allRestraunts, setAllRestraunts] = useState([]);
+    const [filteredRestraunts, setFilterdRestraunts] = useState([]);
     const [searchText, setSearchText] = useState("");
+
+    useEffect(() => {
+        getRestraunts();
+    }, []);
 
 
     async function getRestraunts() {
-        const response = await fetch("https://personal-api-5216c-default-rtdb.firebaseio.com/");
-        const data = await response.json();
+        // const response = await fetch("https://personal-api-5216c-default-rtdb.firebaseio.com/hello.json");
+        // const data = await response.json();
         // console.log(data);
         // setRestraunts(data?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
         // console.log(data.data.cards[3].card.card.gridElements.infoWithStyle.restaurants);
-        console.log(data, 'data')
+        // console.log(data, 'data')
         // const restaurants = data?.data?.cards?.[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants;
         // console.log(restaurants)
         // const names = restaurants?.map((restaurant) => ({
@@ -33,13 +38,29 @@ const Body = () => {
         // console.log(names, "names");
 
         // setRestraunts(names);
+
+        // const data = await response.json();
+        // const key = "-NajhXoOdAXyg701_PdM";
+        // console.log(data[key][0].Data.data.name);
+
+        const response = await fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=20.3532772&lng=85.8265977");
+
+        const json = await response.json();
+
+        console.log(json);
+
+        console.log("data - ", json?.data?.cards?.[5]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+        console.log(json?.data?.cards)
+        setAllRestraunts(json?.data?.cards[5]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+        setFilterdRestraunts(json?.data?.cards[5]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+
+
+        // setAllRestraunts(json?.data?.cards);
+        // setFilterdRestraunts(json?.data?.cards);
+
     }
 
-    useEffect(() => {
-        getRestraunts();
-    }, []);
-
-    return (
+    return (allRestraunts?.length == 0) ? <Shimmer /> : (
         <>
             <div className="search-body">
                 <div className="search-container">
@@ -47,8 +68,8 @@ const Body = () => {
                         setSearchText(e.target.value);
                     }} />
                     <button className="search-btn" onClick={() => {
-                        const data = filterData(searchText, restraunts);
-                        setRestraunts(data);
+                        const data = filterData(searchText, allRestraunts);
+                       setFilterdRestraunts(data);
                     }
                     }>
                         Search
@@ -57,13 +78,13 @@ const Body = () => {
             </div>
             <div className="main-body">
                 {
-                    restraunts && restraunts?.map((restraunt) => {
-                        return <RestrauntCard {...restraunt.Data.data} key={restraunt.Data.data.id} />
+                    filteredRestraunts?.map((restraunt) => {
+                        return <RestrauntCard data={restraunt.info} key={restraunt.info.id} />
                     })
                 }
             </div>
         </>
-    ) 
+    )
 }
 
 export default Body;
